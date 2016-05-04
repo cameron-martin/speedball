@@ -11,7 +11,8 @@
     "url": "git+https://github.com/cameron-martin/speedball.git"
   },
   "keywords": [
-    "dependency-injection"
+    "dependency-injection",
+    "dependency injection"
   ],
   "author": "Cameron Martin",
   "license": "MIT",
