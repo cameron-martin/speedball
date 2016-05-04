@@ -4,7 +4,8 @@
   "description": "A dependency injection library.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/**/*.js",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -19,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/cameron-martin/speedball/issues"
   },
-  "homepage": "https://github.com/cameron-martin/speedball#readme"
+  "homepage": "https://github.com/cameron-martin/speedball#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "flow-bin": "^0.24.1",
+    "mocha": "^2.4.5"
+  }
 }
