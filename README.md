@@ -49,3 +49,22 @@ speedball.registerFactory('neighboursStreetNumber', function(speedball) {
   return speedball.resolve('streetNumber') - 1;
 });
 ```
+
+## API
+
+The types in the api documentation follow the conventions of [flow].
+
+Speedball has a fluent api, so all `register*` methods return this.
+
+### `registerClass<T>(name: string, class: Class<T>, options: ClassOptions): Speedball`
+
+```
+type ClassOptions = {
+  args: Array<string>
+  props: { [key: string]: string }
+}
+```
+
+### `registerFunction`
+
+[flow]: http://flowtype.org/
