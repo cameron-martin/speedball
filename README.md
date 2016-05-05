@@ -30,22 +30,22 @@ const heater = log => heatingAmount => {
 
 
 ```javascript
+import Speedball, { constructor, func, value, singleton } from 'speedball';
+
 var speedball = new Speedball();
 
-speedball.registerClass('house', House, {
+speedball.register('house', constructor(House, {
   args: ['streetNumber'],
   props: { neighboursStreetNumber: 'neighboursStreetNumber' }
-});
+}));
 
-speedball.registerFunction('heater', heater, {
-  args: ['log']
-});
+speedball.register('heater', singleton(func(heater, ['log'])));
 
-speedball.registerValue('log', console.log.bind(console));
+speedball.register('log', value(console.log.bind(console)));
 
-speedball.registerValue('streetNumber', 1);
+speedball.register('streetNumber', value(1));
 
-speedball.registerFactory('neighboursStreetNumber', function(speedball) {
+speedball.register('neighboursStreetNumber', function(speedball) {
   return speedball.resolve('streetNumber') - 1;
 });
 ```
@@ -54,7 +54,7 @@ speedball.registerFactory('neighboursStreetNumber', function(speedball) {
 
 The types in the api documentation follow the conventions of [flow].
 
-Speedball has a fluent api, so all `register*` methods return this.
+Speedball has a fluent api, so all `register` returns this.
 
 ### `registerClass<T>(name: string, class: Class<T>, options: ClassOptions): Speedball`
 
