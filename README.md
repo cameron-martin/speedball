@@ -1,5 +1,7 @@
 # Speedball
 
+Speedball is a [combinator-based][combinator] depdenency injection library
+
 ## Examples
 
 ```javascript
@@ -54,9 +56,22 @@ speedball.register('neighboursStreetNumber', function(speedball) {
 
 The types in the api documentation follow the conventions of [flow].
 
-Speedball has a fluent api, so all `register` returns this.
+Speedball has a fluent api, so `register` returns this.
 
-### `registerClass<T>(name: string, class: Class<T>, options: ClassOptions): Speedball`
+### Methods
+
+#### `register<T>(name: string,: Class<T>, options: ClassOptions): Speedball`
+
+
+### Factory constructors
+
+Factory constructors are functions which construct factories. Factories are functions which compute
+
+```
+type Factory<T> = (x: Speedball) => T;
+```
+
+#### `constructor<T>(constructor: Class<T>, options: ClassOptions): Factory<T>`
 
 ```
 type ClassOptions = {
@@ -65,6 +80,12 @@ type ClassOptions = {
 }
 ```
 
-### `registerFunction`
+
+### Factory combinators
+
+#### ```singleton<T>(factory: Factory<T>): Factory<T>```
+
+Converts a factory into a singleton factory, i.e. a factory which memoises the result.
 
 [flow]: http://flowtype.org/
+[combinator]: https://wiki.haskell.org/Combinator_pattern
