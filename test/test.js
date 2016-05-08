@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { suite, test } from 'mocha';
 
 import type { Factory } from '../index';
-import Speedball, { value, singleton, func } from '../index';
+import Speedball, { value, singleton, func, construct } from '../index';
 
 // TODO: Don't do this horrible typecasting
 var noOpResolver = {
@@ -162,5 +162,51 @@ suite('func', function() {
 
     // Assert
     sinon.assert.calledWithExactly(a, entity1, entity2);
+  });
+});
+
+suite('constructor', function() {
+  test('injects dependencies into constructor and props', function() {
+    var speedball = new Speedball();
+
+    class Entity {
+      one: number;
+
+      constructor(one) {
+        this.one = one;
+      }
+    }
+
+    speedball.register('one', value(1));
+    speedball.register('two', value(2));
+
+    speedball.register('entity', construct(Entity, {
+      args: ['one'],
+      props: { two: 'two' }
+    }));
+
+    var entity = speedball.resolve('entity');
+
+    expect(entity.one).to.eq(1);
+    expect(entity.two).to.eq(2);
+  });
+
+  test.skip('it allows circular dependencies when using props', function() {
+    var speedball = new Speedball();
+
+    class Entity1 {}
+    class Entity2 {}
+
+    speedball.register('entity1', construct(Entity1, {
+      props: { prop: 'entity2'}
+    }));
+
+    speedball.register('entity2', construct(Entity2, {
+      props: { prop: 'entity1'}
+    }));
+
+    expect(() => {
+      speedball.resolve('entity1');
+    }).to.not.throw();
   });
 });

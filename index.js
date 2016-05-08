@@ -55,7 +55,7 @@ class Resolver {
 }
 
 export function value<T>(value: T): Factory<T> {
-  return function(speedball) {
+  return function(resolver) {
     return value;
   };
 }
@@ -63,9 +63,9 @@ export function value<T>(value: T): Factory<T> {
 export function singleton<T>(factory: Factory<T>): Factory<T> {
   var result;
 
-  return function(speedball) {
+  return function(resolver) {
     if(!result) {
-      result = factory(speedball);
+      result = factory(resolver);
     }
 
     return result;
@@ -73,8 +73,33 @@ export function singleton<T>(factory: Factory<T>): Factory<T> {
 }
 
 export function func<T>(func: (...args: any) => T, entities: Array<string> = []): Factory<T> {
-  return function(speedball) {
-    var args = entities.map(entityName => speedball.resolve(entityName));
+  return function(resolver) {
+    var args = entities.map(entityName => resolver.resolve(entityName));
     return func(...args);
+  };
+}
+
+type ConstructOptions = {
+  args?: Array<string>,
+  props?: { [key: string]: string }
+};
+
+export function construct<T>(constructor: Class<T>, options: ConstructOptions = {}): Factory<T> {
+  var argEntities = options.args || [];
+  var propEntities = options.props || {};
+
+
+  return function(resolver) {
+    var args = argEntities.map(argEntity => resolver.resolve(argEntity));
+
+    var object = new (constructor: any)(...args);
+
+    for(let propertyName in propEntities) {
+      let entityName = propEntities[propertyName];
+
+      object[propertyName] = resolver.resolve(entityName);
+    }
+
+    return object;
   };
 }
