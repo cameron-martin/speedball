@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cameron-martin/speedball.svg?branch=master)](https://travis-ci.org/cameron-martin/speedball)
+
 # Speedball
 
 Speedball is a [combinator-based][combinator] depdenency injection library. It consists of:
