@@ -5,7 +5,7 @@ Speedball is a [combinator-based][combinator] depdenency injection library. It c
 * *Factories*, which are functions which produce dependencies.
 * A `Speedball` class, which is used to register factories with and resolve dependencies using those factories.
 * *Factory creators*, which are functions which produce factories, given something which is not a factory.
-* *Factory combinators*, which are function which take factories as arguments and produce factories. These are used for modifying factories.
+* *Factory combinators*, which are functions which take factories as arguments and produce factories. These are used for modifying factories.
 
 ## Examples
 
