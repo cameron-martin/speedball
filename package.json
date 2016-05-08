@@ -4,10 +4,11 @@
   "description": "A dependency injection library.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-register -u tdd test/**/*.js",
-    "flow": "flow",
-    "build": "gobble",
-    "lint": "eslint index.js test/test.js"
+    "test": "npm run test:typecheck && npm run test:lint && npm run test:unit",
+    "test:unit": "mocha --compilers js:babel-register -u tdd test/**/*.js",
+    "test:lint": "eslint index.js test/test.js",
+    "test:typecheck": "flow",
+    "build": "gobble"
   },
   "repository": {
     "type": "git",
