@@ -2,11 +2,11 @@
   "name": "speedball",
   "version": "0.0.1",
   "description": "A dependency injection library.",
-  "main": "index.js",
+  "main": "src/speedball.js",
   "scripts": {
     "test": "npm run test:typecheck && npm run test:lint && npm run test:unit",
     "test:unit": "BABEL_ENV=test mocha --compilers js:babel-register -u tdd test/**/*.js",
-    "test:lint": "eslint index.js test/test.js",
+    "test:lint": "eslint src/**/* test/**/*",
     "test:typecheck": "flow",
     "build": "BABEL_ENV=build gobble watch dist/",
     "build-once": "BABEL_ENV=build gobble build dist/"

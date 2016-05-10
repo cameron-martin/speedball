@@ -4,8 +4,8 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { suite, test } from 'mocha';
 
-import type { Factory } from '../index';
-import Speedball, { value, singleton, func, construct } from '../index';
+import type { Factory } from '../src/speedball';
+import Speedball, { value, singleton, func, construct } from '../src/speedball';
 
 function createResolver(entities: { [key: string]: any }) {
   return {

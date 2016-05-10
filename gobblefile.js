@@ -1,9 +1,9 @@
 var gobble = require('gobble');
 
-var builtFile = gobble('index.js')
+var builtFile = gobble('src')
   .transform('babel')
   .transform('rollup', {
-    entry: 'index.js',
+    entry: 'speedball.js',
     format: 'umd',
     moduleName: 'Speedball'
   });
