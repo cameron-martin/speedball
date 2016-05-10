@@ -94,5 +94,14 @@ type ClassOptions = {
 
 Converts a factory into a singleton factory, i.e. a factory which memoises the result.
 
+## TODO
+
+* Implement AOP features. Maybe as a seperate npm module?
+* Make better testing.
+  - Have a separation between unit and integration tests?
+  - Do some property-based testing where arbitrary dependency graphs are generated
+    and assertions are calculated based on whether they are cyclic or acyclic.
+  - Find out why travis is failing on all nodes < 5.0
+
 [flow]: http://flowtype.org/
 [combinator]: https://wiki.haskell.org/Combinator_pattern
