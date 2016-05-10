@@ -5,7 +5,8 @@ var builtFile = gobble('src')
   .transform('rollup', {
     entry: 'speedball.js',
     format: 'umd',
-    moduleName: 'Speedball'
+    moduleName: 'Speedball',
+    moduleId: 'speedball'
   });
 
 module.exports = gobble([
