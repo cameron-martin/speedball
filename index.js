@@ -4,7 +4,11 @@ export type Factory<T> = (x: IResolver) => T;
 
 export interface IResolver {
   resolve<T>(name: string): T;
+  after(f: AfterHook): void;
+  willCauseCycle(name: string): bool;
 }
+
+type AfterHook = (resolver: IResolver) => void;
 
 export default class Speedball {
   _factories: { [key: string]: Factory<any> };
@@ -24,33 +28,73 @@ export default class Speedball {
   }
 
   resolve<T>(name: string): T {
-    return new Resolver(this._factories, []).resolve(name);
+    var resolvingSession = new ResolvingSession(this._factories);
+    var entity = new Resolver(this._factories, [], resolvingSession).resolve(name);
+
+    resolvingSession.runAfterHooks();
+
+    return entity;
+  }
+}
+
+class ResolvingSession {
+  _afterHooks: Array<AfterHook>;
+  _factories: { [key: string]: Factory<any> };
+
+  constructor(factories) {
+    this._factories = factories;
+    this._afterHooks = [];
+  }
+
+  addAfterHook(f) {
+    this._afterHooks.push(f);
+  }
+
+  runAfterHooks() {
+    this._afterHooks.forEach(after => {
+      var resolvingSession = new ResolvingSession(this._factories);
+      var resolver = new Resolver(this._factories, [], resolvingSession);
+
+      after(resolver);
+
+      resolvingSession.runAfterHooks();
+    });
   }
 }
 
 class Resolver {
   _factories: { [key: string]: Factory<any> };
   _ancestors: Array<string>;
+  _resolvingSession: ResolvingSession;
 
-  constructor(factories, ancestors) {
+  constructor(factories, ancestors, resolvingSession) {
     this._factories = factories;
     this._ancestors = ancestors;
+    this._resolvingSession = resolvingSession;
 
     Object.freeze(this);
   }
 
   resolve(name: string) {
-    if(this._ancestors.indexOf(name) !== -1) {
-      throw new Error('Circular dependency detected');
-    }
-
     if(!(name in this._factories)) {
       throw new Error('Attempted to resolve an unregistered dependency: ' + name);
     }
 
-    const newResolver = new Resolver(this._factories, this._ancestors.concat([name]));
+    if(this.willCauseCycle(name)) {
+      throw new Error('Circular dependency detected');
+    }
+
+    const newResolver = new Resolver(this._factories, this._ancestors.concat([name]), this._resolvingSession);
 
     return this._factories[name](newResolver);
+  }
+
+  after(f: AfterHook): void {
+    this._resolvingSession.addAfterHook(f);
+  }
+
+  willCauseCycle(entityName: string): bool {
+    return this._ancestors.indexOf(entityName) !== -1;
   }
 }
 
@@ -97,7 +141,13 @@ export function construct<T>(constructor: Class<T>, options: ConstructOptions = 
     for(let propertyName in propEntities) {
       let entityName = propEntities[propertyName];
 
-      object[propertyName] = resolver.resolve(entityName);
+      if(resolver.willCauseCycle(entityName)) {
+        resolver.after(function(resolver) {
+          object[propertyName] = resolver.resolve(entityName);
+        });
+      } else {
+        object[propertyName] = resolver.resolve(entityName);
+      }
     }
 
     return object;

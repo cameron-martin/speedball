@@ -7,10 +7,17 @@ import { suite, test } from 'mocha';
 import type { Factory } from '../index';
 import Speedball, { value, singleton, func, construct } from '../index';
 
-// TODO: Don't do this horrible typecasting
-var noOpResolver = {
-  resolve<T>(): T { return ((undefined: any): T); }
-};
+function createResolver(entities: { [key: string]: any }) {
+  return {
+    resolve<T>(name: string): T {
+      return (entities[name]: T);
+    },
+    after(f) { },
+    willCauseCycle() { return false; }
+  };
+}
+
+var noOpResolver = createResolver({});
 
 suite('Speedball', function() {
   suite('#register', function() {
@@ -150,15 +157,13 @@ suite('func', function() {
     // Arrange
     const a = sinon.stub().returns(true);
 
-    var entity1 = {},
-        entity2 = {};
+    var entity1 = 1,
+        entity2 = 2;
 
-    var speedball = new Speedball();
-    speedball.register('entity1', value(entity1));
-    speedball.register('entity2', value(entity1));
+    var resolver = createResolver({ entity1, entity2 });
 
     // Act
-    func(a, ['entity1', 'entity2'])(speedball);
+    func(a, ['entity1', 'entity2'])(resolver);
 
     // Assert
     sinon.assert.calledWithExactly(a, entity1, entity2);
@@ -191,22 +196,23 @@ suite('constructor', function() {
     expect(entity.two).to.eq(2);
   });
 
-  test.skip('it allows circular dependencies when using props', function() {
+  test('it allows circular dependencies when using props', function() {
     var speedball = new Speedball();
 
     class Entity1 {}
     class Entity2 {}
 
-    speedball.register('entity1', construct(Entity1, {
+    speedball.register('entity1', singleton(construct(Entity1, {
       props: { prop: 'entity2'}
-    }));
+    })));
 
-    speedball.register('entity2', construct(Entity2, {
+    speedball.register('entity2', singleton(construct(Entity2, {
       props: { prop: 'entity1'}
-    }));
+    })));
 
-    expect(() => {
-      speedball.resolve('entity1');
-    }).to.not.throw();
+    var entity1 = speedball.resolve('entity1');
+
+    expect(entity1.prop).to.be.an.instanceOf(Entity2);
+    expect(entity1.prop.prop).to.eq(entity1);
   });
 });
