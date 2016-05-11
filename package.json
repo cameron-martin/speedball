@@ -2,7 +2,8 @@
   "name": "speedball",
   "version": "0.0.1",
   "description": "A dependency injection library.",
-  "main": "src/speedball.js",
+  "main": "dist/speedball.js",
+  "jsnext:main": "dist/es2015/speedball.js",
   "scripts": {
     "test": "npm run test:typecheck && npm run test:lint && npm run test:unit",
     "test:unit": "BABEL_ENV=test mocha --compilers js:babel-register -u tdd test/**/*.js",
@@ -58,6 +59,7 @@
     "gobble": "^0.11.3",
     "gobble-babel": "^6.0.0",
     "gobble-cli": "^0.7.0",
+    "gobble-rename": "^0.1.0",
     "gobble-rollup": "^0.26.1",
     "gobble-uglifyjs": "^0.2.1",
     "mocha": "^2.4.5",

@@ -1,6 +1,8 @@
 var gobble = require('gobble');
 
-var builtFile = gobble('src')
+var source = gobble('src');
+
+var builtFile = source
   .transform('babel')
   .transform('rollup', {
     entry: 'speedball.js',
@@ -12,5 +14,13 @@ var builtFile = gobble('src')
 
 module.exports = gobble([
   builtFile.transform('uglifyjs', { ext: '.min.js' }),
-  builtFile
+  builtFile,
+  source.transform('babel', {
+    babelrc: false,
+    plugins: [
+      'transform-flow-strip-types',
+      'transform-class-properties'
+    ],
+    sourceMap: false
+  }).moveTo('es2015')
 ]);
