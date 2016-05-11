@@ -6,10 +6,11 @@ var builtFile = gobble('src')
     entry: 'speedball.js',
     format: 'umd',
     moduleName: 'Speedball',
-    moduleId: 'speedball'
+    moduleId: 'speedball',
+    exports: 'named'
   });
 
 module.exports = gobble([
-  builtFile.transform( 'uglifyjs', { ext: '.min.js' }),
+  builtFile.transform('uglifyjs', { ext: '.min.js' }),
   builtFile
 ]);
