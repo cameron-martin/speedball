@@ -105,6 +105,7 @@ Converts a factory into a singleton factory, i.e. a factory which memoises the r
     and assertions are calculated based on whether they are cyclic or acyclic.
   - Find out why travis is failing on all nodes < 5.0
 * Supply a jsnext version: https://github.com/rollup/rollup/wiki/jsnext:main
+* Add code climate, gitter etc.
 
 [flow]: http://flowtype.org/
 [combinator]: https://wiki.haskell.org/Combinator_pattern
