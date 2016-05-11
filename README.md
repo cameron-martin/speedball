@@ -97,7 +97,6 @@ Converts a factory into a singleton factory, i.e. a factory which memoises the r
 ## TODO
 
 * Add API documentation.
-* Add compiled files to source control. Build using a pre-commit hook.
 * Implement AOP features. Maybe as a seperate npm module?
 * Make better testing.
   - Have a separation between unit and integration tests?
