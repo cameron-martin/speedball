@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+npm run build-once
+git add dist/*
+git commit --amend -C HEAD --no-verify

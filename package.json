@@ -9,7 +9,7 @@
     "test:lint": "eslint src/**/* test/**/*",
     "test:typecheck": "flow",
     "build": "BABEL_ENV=build gobble watch dist/",
-    "build-once": "BABEL_ENV=build gobble build dist/"
+    "build-once": "BABEL_ENV=build gobble build dist/ -f"
   },
   "repository": {
     "type": "git",
@@ -61,6 +61,7 @@
     "gobble-rollup": "^0.26.1",
     "gobble-uglifyjs": "^0.2.1",
     "mocha": "^2.4.5",
+    "shared-git-hooks": "^1.1.4",
     "sinon": "^1.17.4"
   }
 }
