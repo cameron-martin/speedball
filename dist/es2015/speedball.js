@@ -131,3 +131,5 @@ export function construct(constructor, options = {}) {
     return object;
   };
 }
+
+export const __esModule = true;

@@ -178,10 +178,13 @@
     };
   }
 
+  var __esModule = true;
+
   exports['default'] = Speedball;
   exports.value = value;
   exports.singleton = singleton;
   exports.func = func;
   exports.construct = construct;
+  exports.__esModule = __esModule;
 
 }));
