@@ -2,6 +2,8 @@
 
 # Speedball
 
+[![Join the chat at https://gitter.im/cameron-martin/speedball](https://badges.gitter.im/cameron-martin/speedball.svg)](https://gitter.im/cameron-martin/speedball?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Speedball is a [combinator-based][combinator] depdenency injection library. It consists of:
 
 * *Factories*, which are functions which produce dependencies.
