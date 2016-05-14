@@ -153,5 +153,3 @@ export function construct<T>(constructor: Class<T>, options: ConstructOptions = 
     return object;
   };
 }
-
-export const __esModule = true;
