@@ -40,14 +40,14 @@ const heater = log => heatingAmount => {
 
 
 ```javascript
-import Speedball, { constructor, func, value, singleton } from 'speedball';
+import Speedball, { construct, props, func, value, singleton } from 'speedball';
 
 var speedball = new Speedball();
 
-speedball.register('house', constructor(House, {
-  args: ['streetNumber'],
-  props: { neighboursStreetNumber: 'neighboursStreetNumber' }
-}));
+speedball.register('house', props(
+  construct(House, ['streetNumber']),
+  { neighboursStreetNumber: 'neighboursStreetNumber' }
+));
 
 speedball.register('heater', singleton(func(heater, ['log'])));
 

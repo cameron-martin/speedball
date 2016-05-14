@@ -107,27 +107,30 @@ export function func(func, entities = []) {
   };
 }
 
-export function construct(constructor, options = {}) {
-  var argEntities = options.args || [];
-  var propEntities = options.props || {};
-
+export function construct(constructor, entities = []) {
   return function (resolver) {
-    var args = argEntities.map(argEntity => resolver.resolve(argEntity));
+    var args = entities.map(entity => resolver.resolve(entity));
 
-    var object = new constructor(...args);
+    return new constructor(...args);
+  };
+}
 
-    for (let propertyName in propEntities) {
-      let entityName = propEntities[propertyName];
+export function props(factory, props) {
+  return function (resolver) {
+    var entity = factory(resolver);
+
+    for (let propertyName in props) {
+      let entityName = props[propertyName];
 
       if (resolver.willCauseCycle(entityName)) {
         resolver.after(function (resolver) {
-          object[propertyName] = resolver.resolve(entityName);
+          entity[propertyName] = resolver.resolve(entityName);
         });
       } else {
-        object[propertyName] = resolver.resolve(entityName);
+        entity[propertyName] = resolver.resolve(entityName);
       }
     }
 
-    return object;
+    return entity;
   };
 }

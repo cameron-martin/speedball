@@ -123,33 +123,30 @@ export function func<T>(func: (...args: any) => T, entities: Array<string> = [])
   };
 }
 
-type ConstructOptions = {
-  args?: Array<string>,
-  props?: { [key: string]: string }
-};
-
-export function construct<T>(constructor: Class<T>, options: ConstructOptions = {}): Factory<T> {
-  var argEntities = options.args || [];
-  var propEntities = options.props || {};
-
-
+export function construct<T>(constructor: Class<T>, entities: Array<string> = []): Factory<T> {
   return function(resolver) {
-    var args = argEntities.map(argEntity => resolver.resolve(argEntity));
+    var args = entities.map(entity => resolver.resolve(entity));
 
-    var object = new (constructor: any)(...args);
+    return new (constructor: any)(...args);
+  };
+}
 
-    for(let propertyName in propEntities) {
-      let entityName = propEntities[propertyName];
+export function props<T>(factory: Factory<T>, props: { [key: string]: string }): Factory<T> {
+  return function(resolver) {
+    var entity = factory(resolver);
+
+    for(let propertyName in props) {
+      let entityName = props[propertyName];
 
       if(resolver.willCauseCycle(entityName)) {
         resolver.after(function(resolver) {
-          object[propertyName] = resolver.resolve(entityName);
+          (entity: any)[propertyName] = resolver.resolve(entityName);
         });
       } else {
-        object[propertyName] = resolver.resolve(entityName);
+        (entity: any)[propertyName] = resolver.resolve(entityName);
       }
     }
 
-    return object;
+    return entity;
   };
 }

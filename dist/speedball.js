@@ -146,35 +146,38 @@
   }
 
   function construct(constructor) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-    var argEntities = options.args || [];
-    var propEntities = options.props || {};
+    var entities = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
     return function (resolver) {
-      var args = argEntities.map(function (argEntity) {
-        return resolver.resolve(argEntity);
+      var args = entities.map(function (entity) {
+        return resolver.resolve(entity);
       });
 
-      var object = new (Function.prototype.bind.apply(constructor, [null].concat(_toConsumableArray(args))))();
+      return new (Function.prototype.bind.apply(constructor, [null].concat(_toConsumableArray(args))))();
+    };
+  }
+
+  function props(factory, props) {
+    return function (resolver) {
+      var entity = factory(resolver);
 
       var _loop = function _loop(propertyName) {
-        var entityName = propEntities[propertyName];
+        var entityName = props[propertyName];
 
         if (resolver.willCauseCycle(entityName)) {
           resolver.after(function (resolver) {
-            object[propertyName] = resolver.resolve(entityName);
+            entity[propertyName] = resolver.resolve(entityName);
           });
         } else {
-          object[propertyName] = resolver.resolve(entityName);
+          entity[propertyName] = resolver.resolve(entityName);
         }
       };
 
-      for (var propertyName in propEntities) {
+      for (var propertyName in props) {
         _loop(propertyName);
       }
 
-      return object;
+      return entity;
     };
   }
 
@@ -183,6 +186,7 @@
   exports.singleton = singleton;
   exports.func = func;
   exports.construct = construct;
+  exports.props = props;
 
 
 

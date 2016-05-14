@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { suite, test } from 'mocha';
 
 import type { Factory } from '../src/speedball';
-import Speedball, { value, singleton, func, construct } from '../src/speedball';
+import Speedball, { value, singleton, func, construct, props } from '../src/speedball';
 
 function createResolver(entities: { [key: string]: any }) {
   return {
@@ -170,7 +170,7 @@ suite('func', function() {
   });
 });
 
-suite('constructor', function() {
+suite('construct', function() {
   test('injects dependencies into constructor and props', function() {
     var speedball = new Speedball();
 
@@ -183,32 +183,49 @@ suite('constructor', function() {
     }
 
     speedball.register('one', value(1));
-    speedball.register('two', value(2));
 
-    speedball.register('entity', construct(Entity, {
-      args: ['one'],
-      props: { two: 'two' }
-    }));
+    speedball.register('entity', construct(Entity, ['one']));
 
     var entity = speedball.resolve('entity');
 
     expect(entity.one).to.eq(1);
+  });
+});
+
+suite('props', function() {
+  test('it injects dependencies into props', function() {
+    var speedball = new Speedball();
+
+    class Entity {}
+
+    speedball.register('two', value(2));
+
+    speedball.register('entity', props(
+      construct(Entity),
+      { two: 'two' }
+    ));
+
+    var entity = speedball.resolve('entity');
+
     expect(entity.two).to.eq(2);
   });
 
-  test('it allows circular dependencies when using props', function() {
+
+  test('it allows circular dependencies', function() {
     var speedball = new Speedball();
 
     class Entity1 {}
     class Entity2 {}
 
-    speedball.register('entity1', singleton(construct(Entity1, {
-      props: { prop: 'entity2'}
-    })));
+    speedball.register('entity1', singleton(props(
+      construct(Entity1),
+      { prop: 'entity2'}
+    )));
 
-    speedball.register('entity2', singleton(construct(Entity2, {
-      props: { prop: 'entity1'}
-    })));
+    speedball.register('entity2', singleton(props(
+      construct(Entity2),
+      { prop: 'entity1'}
+    )));
 
     var entity1 = speedball.resolve('entity1');
 
