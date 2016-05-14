@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/cameron-martin/speedball.svg?branch=master)](https://travis-ci.org/cameron-martin/speedball)
+[![David](https://david-dm.org/cameron-martin/speedball.svg)](https://david-dm.org/cameron-martin/speedball)
 [![Join the chat at https://gitter.im/cameron-martin/speedball](https://badges.gitter.im/cameron-martin/speedball.svg)](https://gitter.im/cameron-martin/speedball?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Speedball
