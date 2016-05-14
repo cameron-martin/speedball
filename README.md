@@ -111,5 +111,9 @@ Converts a factory into a singleton factory, i.e. a factory which memoises the r
   - Find out why travis is failing on all nodes < 5.0
 * Add code climate, gitter etc.
 
+## Contributing
+
+Pull requests are very much welcome. Also, if there is something you want added or something is broken then please open an issue.
+
 [flow]: http://flowtype.org/
 [combinator]: https://wiki.haskell.org/Combinator_pattern
