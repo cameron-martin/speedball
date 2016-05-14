@@ -13,7 +13,7 @@ Speedball is a [combinator-based][combinator] depdenency injection library. It c
 
 ## Installation
 
-    npm install speedball
+    npm install --save speedball
 
 ## Example
 
