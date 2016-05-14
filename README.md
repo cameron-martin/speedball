@@ -109,7 +109,8 @@ Converts a factory into a singleton factory, i.e. a factory which memoises the r
   - Do some property-based testing where arbitrary dependency graphs are generated
     and assertions are calculated based on whether they are cyclic or acyclic.
   - Find out why travis is failing on all nodes < 5.0
-* Add code climate, gitter etc.
+* Add code climate etc.
+* Submit PR to micro js.
 
 ## Contributing
 
