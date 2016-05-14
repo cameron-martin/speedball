@@ -11,7 +11,11 @@ Speedball is a [combinator-based][combinator] depdenency injection library. It c
 * *Factory creators*, which are functions which produce factories, given something which is not a factory.
 * *Factory combinators*, which are functions which take factories as arguments and produce factories. These are used for modifying factories.
 
-## Examples
+## Installation
+
+    npm install speedball
+
+## Example
 
 ```javascript
 class House {
