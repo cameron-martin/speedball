@@ -1,6 +1,6 @@
 {
   "name": "speedball",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A dependency injection library.",
   "main": "dist/speedball.js",
   "jsnext:main": "dist/es2015/speedball.js",
