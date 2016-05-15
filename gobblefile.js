@@ -6,9 +6,10 @@ var source = gobble('src');
 // https://github.com/rollup/rollup/pull/652
 // is merged.
 function addEsModule( input, options ) {
-  const replacement = '\n\nexports.__esModule = true;\n\n}));'
+  const search = "exports['default'] = Speedball;";
+  const replacement = '\n\nObject.defineProperty(exports, "__esModule", {value: true});\n\n';
 
-  return input.replace(/\}\)\);\s*$/, replacement);
+  return input.replace(search, search + replacement);
 }
 
 var builtFile = source
