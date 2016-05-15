@@ -4,7 +4,13 @@ set -eo pipefail
 if [ -e .commit ]
 then
     rm .commit
-    npm run build-once
-    git add dist/*
-    git commit --amend -C HEAD --no-verify
+    echo "Building output"
+    {
+      npm run build-once &&
+      git add dist/* &&
+      git commit --amend -C HEAD --no-verify
+    } || {
+      echo "Building failed, uncommitting"
+      git reset HEAD~1
+    }
 fi
