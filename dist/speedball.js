@@ -179,8 +179,5 @@
   exports.construct = construct;
   exports.props = props;
 
-
-
-exports.__esModule = true;
-
 }));
+//# sourceMappingURL=speedball.js.map

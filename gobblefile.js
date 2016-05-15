@@ -18,7 +18,8 @@ var builtFile = source
     format: 'umd',
     moduleName: 'Speedball',
     moduleId: 'speedball',
-    exports: 'named'
+    exports: 'named',
+    sourceMap: true
   })
   .transform(addEsModule);
 
