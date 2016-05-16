@@ -4,14 +4,20 @@
   (factory((global.Speedball = global.Speedball || {})));
 }(this, function (exports) { 'use strict';
 
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
   var Speedball = function () {
     function Speedball() {
-      babelHelpers.classCallCheck(this, Speedball);
+      _classCallCheck(this, Speedball);
 
       this._factories = {};
     }
 
-    babelHelpers.createClass(Speedball, [{
+    _createClass(Speedball, [{
       key: 'register',
       value: function register(name, factory) {
         if (name in this._factories) {
@@ -33,18 +39,19 @@
         return entity;
       }
     }]);
+
     return Speedball;
   }();
 
   var ResolvingSession = function () {
     function ResolvingSession(factories) {
-      babelHelpers.classCallCheck(this, ResolvingSession);
+      _classCallCheck(this, ResolvingSession);
 
       this._factories = factories;
       this._afterHooks = [];
     }
 
-    babelHelpers.createClass(ResolvingSession, [{
+    _createClass(ResolvingSession, [{
       key: 'addAfterHook',
       value: function addAfterHook(f) {
         this._afterHooks.push(f);
@@ -64,12 +71,13 @@
         });
       }
     }]);
+
     return ResolvingSession;
   }();
 
   var Resolver = function () {
     function Resolver(factories, ancestors, resolvingSession) {
-      babelHelpers.classCallCheck(this, Resolver);
+      _classCallCheck(this, Resolver);
 
       this._factories = factories;
       this._ancestors = ancestors;
@@ -78,7 +86,7 @@
       Object.freeze(this);
     }
 
-    babelHelpers.createClass(Resolver, [{
+    _createClass(Resolver, [{
       key: 'resolve',
       value: function resolve(name) {
         if (!(name in this._factories)) {
@@ -104,6 +112,7 @@
         return this._ancestors.indexOf(entityName) !== -1;
       }
     }]);
+
     return Resolver;
   }();
 
@@ -132,7 +141,7 @@
       var args = entities.map(function (entityName) {
         return resolver.resolve(entityName);
       });
-      return func.apply(undefined, babelHelpers.toConsumableArray(args));
+      return func.apply(undefined, _toConsumableArray(args));
     };
   }
 
@@ -144,7 +153,7 @@
         return resolver.resolve(entity);
       });
 
-      return new (Function.prototype.bind.apply(constructor, [null].concat(babelHelpers.toConsumableArray(args))))();
+      return new (Function.prototype.bind.apply(constructor, [null].concat(_toConsumableArray(args))))();
     };
   }
 
