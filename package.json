@@ -55,7 +55,7 @@
     "chai": "^3.5.0",
     "eslint": "^2.10.1",
     "eslint-plugin-flow-vars": "^0.4.0",
-    "flow-bin": "^0.25.0",
+    "flow-bin": "^0.26.0",
     "gobble": "^0.11.3",
     "gobble-babel": "^6.0.0",
     "gobble-cli": "^0.7.0",
