@@ -59,7 +59,7 @@
     "gobble": "^0.11.3",
     "gobble-babel": "^6.0.0",
     "gobble-cli": "^0.7.0",
-    "gobble-rollup": "^0.26.1",
+    "gobble-rollup": "^0.27.0",
     "gobble-uglifyjs": "^0.2.1",
     "mocha": "^2.4.5",
     "shared-git-hooks": "^1.1.4",
