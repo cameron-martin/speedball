@@ -182,15 +182,13 @@
   }
 
   exports['default'] = Speedball;
-
-Object.defineProperty(exports, "__esModule", {value: true});
-
-
   exports.value = value;
   exports.singleton = singleton;
   exports.func = func;
   exports.construct = construct;
   exports.props = props;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=speedball.js.map
