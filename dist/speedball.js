@@ -192,5 +192,7 @@ Object.defineProperty(exports, "__esModule", {value: true});
   exports.construct = construct;
   exports.props = props;
 
+  Object.defineProperty(exports, '__esModule', { value: true });
+
 }));
 //# sourceMappingURL=speedball.js.map

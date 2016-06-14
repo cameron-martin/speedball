@@ -5,7 +5,7 @@
   "main": "dist/speedball.js",
   "jsnext:main": "dist/es2015/speedball.js",
   "scripts": {
-    "test": "npm run test:typecheck && npm run test:lint && npm run test:unit",
+    "test": "npm run test:typecheck && npm run test:unit",
     "test:unit": "BABEL_ENV=test mocha --compilers js:babel-register -u tdd test/**/*.js",
     "test:lint": "eslint src/**/* test/**/*",
     "test:typecheck": "flow",
