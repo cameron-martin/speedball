@@ -182,10 +182,6 @@
   }
 
   exports['default'] = Speedball;
-
-Object.defineProperty(exports, "__esModule", {value: true});
-
-
   exports.value = value;
   exports.singleton = singleton;
   exports.func = func;
