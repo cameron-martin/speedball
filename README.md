@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/cameron-martin/speedball.svg?branch=master)](https://travis-ci.org/cameron-martin/speedball)
+[![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![David](https://david-dm.org/cameron-martin/speedball.svg)](https://david-dm.org/cameron-martin/speedball)
 [![Join the chat at https://gitter.im/cameron-martin/speedball](https://badges.gitter.im/cameron-martin/speedball.svg)](https://gitter.im/cameron-martin/speedball?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
