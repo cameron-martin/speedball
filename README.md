@@ -149,4 +149,4 @@ Pull requests are very much welcome. Also, if there is something you want added 
 
 [flow]: http://flowtype.org/
 [combinator]: https://wiki.haskell.org/Combinator_pattern
-[abstract-data-type]: https://wiki.haskell.org/Abstract_data_type
+[abstract-data-type]: https://en.wikipedia.org/wiki/Abstract_data_type
