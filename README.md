@@ -7,10 +7,10 @@
 
 Speedball is a [combinator-based][combinator] depdenency injection library. It consists of:
 
-* *Factories*, which are functions which produce dependencies.
+* *Factories*, which are functions that produce dependencies.
 * A `Speedball` class, which is used to register factories with and resolve dependencies using those factories.
-* *Factory creators*, which are functions which produce factories, given something which is not a factory.
-* *Factory combinators*, which are functions which take factories as arguments and produce factories. These are used for modifying factories.
+* *Factory creators*, which are functions that produce factories, given something which is not a factory.
+* *Factory combinators*, which are functions that take factories as arguments and produce factories. These are used for modifying factories.
 
 ## Installation
 
@@ -48,62 +48,92 @@ const heater = log => heatingAmount => {
 ```javascript
 import Speedball, { construct, props, func, value, singleton } from 'speedball';
 
-var speedball = new Speedball();
-
-speedball.register('house', props(
-  construct(House, ['streetNumber']),
-  { neighboursStreetNumber: 'neighboursStreetNumber' }
-));
-
-speedball.register('heater', singleton(func(heater, ['log'])));
-
-speedball.register('log', value(console.log.bind(console)));
-
-speedball.register('streetNumber', value(1));
-
-speedball.register('neighboursStreetNumber', function(speedball) {
-  return speedball.resolve('streetNumber') - 1;
-});
+var speedball = new Speedball()
+  .register('house', props(
+    construct(House, ['streetNumber']),
+    { neighboursStreetNumber: 'neighboursStreetNumber' }
+  ))
+  .register('heater', singleton(func(heater, ['log'])));
+  .register('log', value(console.log.bind(console)));
+  .register('streetNumber', value(1));
+  .register('neighboursStreetNumber', function(speedball) {
+    return speedball.resolve('streetNumber') - 1;
+  });
 ```
 
 ## API
 
 The types in the api documentation follow the conventions of [flow].
 
-Speedball has a fluent api, so `register` returns this.
+### Speedball class
 
-### Methods
+This is what you will use to configure your dependency hierachy and resolve your dependencies with. Unless you are creating custom factory combinators/constructors, the `Factory<T>` type can be considered [abstract][abstract-data-type].
 
-#### `register<T>(name: string,: Class<T>, options: ClassOptions): Speedball`
+#### `register<T>(name: string, factory: Factory<T>): Speedball`
 
+Registers a dependency under the name `name`.
+
+#### `resolve<T>(name: string): T`
+
+Resolves a dependency that has been registered under the name `name`.
 
 ### Factory constructors
 
-Factory constructors are functions which construct factories. Factories are functions which compute
+Factory constructors are functions that construct factories, given something that is not a factory.
 
-```
-type Factory<T> = (x: Speedball) => T;
-```
 
-#### `constructor<T>(constructor: Class<T>, options: ClassOptions): Factory<T>`
+#### `value<T>(value: T): Factory<T>`
 
-```
-type ClassOptions = {
-  args: Array<string>
-  props: { [key: string]: string }
-}
-```
+Create a constant factory that always returns `value`. This is useful for configuration constants, e.g. database connection strings, but also for injecting values such as `window` and `localStorage`.
 
+#### `construct<T>(constructor: Class<T>, entities: Array<string> = []): Factory<T>`
+
+Creates a factory that resolves the entities `entities` then constructs the class `constructor` with them. Similar to `func`.
+
+#### `func<T>(func: (...args: any) => T, entities: Array<string> = []): Factory<T>`
+
+Creates a factory that resolves the entities `entities` then passes them into a function. Similar to `construct`.
 
 ### Factory combinators
 
-#### ```singleton<T>(factory: Factory<T>): Factory<T>```
+Factory combinators modify behaviour of exsting factories. All factory combinators return new factories, rather than mutating existing ones.
 
-Converts a factory into a singleton factory, i.e. a factory which memoises the result.
+#### `singleton<T>(factory: Factory<T>): Factory<T>`
+
+Converts a factory into a singleton factory, i.e. a factory that memoises the result.
+
+#### `props<T>(factory: Factory<T>, props: { [key: string]: string }): Factory<T>`
+
+Converts a factory into a factory that behaves the same as originally, but also has the behaviour of injecting entities as properties of the subject. The keys of `props` are the property names, and the values are entity names.
+
+### Factory type
+
+A factory is a function that is used to instantiate your dependencies.
+
+```
+type Factory<T> = (x: IResolver) => T;
+```
+
+### IResolver interface
+
+An IResolver is something that can be used to resolve other dependencies during resolution of a dependency and enquire about and modify various aspects of the resolution procedure.
+
+This will probably only be of interest if you are developing custom factory combinators/constructors.
+
+#### `resolve<T>(name: string): T`
+
+Resolves a dependency that has been registered under the name `name`. Behaves the same as `Speedball#resolve`.
+
+#### `after(f: AfterHook): void`
+
+Registers an *after hook*, a function that is executed after the root dependency is resolved, but before it is returned to the user. This can be used to "join the circle" when resolving cyclic dependencies.
+
+#### `willCauseCycle(name: string): bool`
+
+Determines whether resolving the dependency registered under the name `name` would result in the dependency graph being cyclic. This can be used in combination with `after` to resolve cyclic dependencies.
 
 ## TODO
 
-* Add API documentation.
 * Implement AOP features. Maybe as a seperate npm module?
 * Make better testing.
   - Have a separation between unit and integration tests?
@@ -119,3 +149,4 @@ Pull requests are very much welcome. Also, if there is something you want added 
 
 [flow]: http://flowtype.org/
 [combinator]: https://wiki.haskell.org/Combinator_pattern
+[abstract-data-type]: https://wiki.haskell.org/Abstract_data_type
