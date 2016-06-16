@@ -5,7 +5,7 @@
 
 # Speedball
 
-Speedball is a [combinator-based][combinator] depdenency injection library. It consists of:
+Speedball is a [combinator-based][combinator] dependency injection library. It consists of:
 
 * *Factories*, which are functions that produce dependencies.
 * A `Speedball` class, which is used to register factories with and resolve dependencies using those factories.
