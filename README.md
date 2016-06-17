@@ -67,7 +67,6 @@ var speedball = new Speedball()
 * To allow currying style DI, e.g.
   `const f = (dep1, dep2) => (arg1, arg2) => {}`
 * To be extensible. The indicator I used for this is the ability to implement AOP without modifying existing code.
-* 
 
 ## API
 
