@@ -61,6 +61,13 @@ var speedball = new Speedball()
   });
 ```
 
+## Design Goals
+
+* To not be tied to a particular module system.
+* To allow currying style DI, e.g.
+  `const f = (dep1, dep2) => (arg1, arg2) => {}`
+* To be extensible. The indicator I used for this is the ability to implement AOP without modifying existing code.
+
 ## API
 
 The types in the api documentation follow the conventions of [flow].
