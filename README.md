@@ -114,6 +114,12 @@ A factory is a function that is used to instantiate your dependencies.
 type Factory<T> = (x: IResolver) => T;
 ```
 
+### AfterHook type
+
+```
+type AfterHook = (resolver: IResolver) => void;
+```
+
 ### IResolver interface
 
 An IResolver is something that can be used to resolve other dependencies during resolution of a dependency and enquire about and modify various aspects of the resolution procedure.

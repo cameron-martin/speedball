@@ -8,7 +8,7 @@ export interface IResolver {
   willCauseCycle(name: string): bool;
 }
 
-type AfterHook = (resolver: IResolver) => void;
+export type AfterHook = (resolver: IResolver) => void;
 
 export default class Speedball {
   _factories: { [key: string]: Factory<any> };
