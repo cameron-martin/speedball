@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "description": "A dependency injection library.",
   "main": "dist/speedball.js",
+  "types": "./types/index.d.ts",
   "jsnext:main": "dist/es2015/speedball.js",
   "scripts": {
     "test": "npm run test:typecheck && npm run test:unit",
