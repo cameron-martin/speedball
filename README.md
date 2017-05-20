@@ -95,11 +95,11 @@ Create a constant factory that always returns `value`. This is useful for config
 
 #### `construct<T>(constructor: Class<T>, entities: Array<string> = []): Factory<T>`
 
-Creates a factory that resolves the entities `entities` then constructs the class `constructor` with them. Similar to `func`.
+Creates a factory that resolves the entities `entities`, constructs the class `constructor` with them, then returns the instance. Similar to `func`.
 
 #### `func<T>(func: (...args: any) => T, entities: Array<string> = []): Factory<T>`
 
-Creates a factory that resolves the entities `entities` then passes them into a function. Similar to `construct`.
+Creates a factory that resolves the entities `entities`, calls the function `func` with them, then returns the result. Similar to `construct`.
 
 ### Factory combinators
 
@@ -152,7 +152,7 @@ Determines whether resolving the dependency registered under the name `name` wou
 This could be used for injecting unique ids into classes and functions.
 
 ```javascript
-function counter () {
+function counter() {
     let count = 1;
     
     return function() {
