@@ -120,7 +120,7 @@ suite('Speedball', function() {
 
 suite('value', function() {
   [1, 'value', {}].forEach(val => {
-    test(`it returns a function which when called returns the constant value ${val}`, function() {
+    test(`it returns a function which when called returns the constant value ${val.toString()}`, function() {
       var factory = value(val);
 
       expect(factory(noOpResolver)).to.eq(val);
