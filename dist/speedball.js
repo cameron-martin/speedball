@@ -183,7 +183,7 @@ function props(factory, props) {
 
 function fromContainer(container, entity) {
   return function (resolver) {
-    return container.resolve < T > entity;
+    return container.resolve(entity);
   };
 }
 

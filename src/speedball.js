@@ -153,6 +153,6 @@ export function props<T>(factory: Factory<T>, props: { [key: string]: string }):
 
 export function fromContainer<T>(container: Speedball, entity: string): Factory<T> {
   return function(resolver) {
-    return container.resolve<T>(entity);
+    return container.resolve(entity);
   };
 }
