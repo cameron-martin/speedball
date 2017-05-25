@@ -134,3 +134,9 @@ export function props(factory, props) {
     return entity;
   };
 }
+
+export function fromContainer(container, entity) {
+  return function (resolver) {
+    return container.resolve < T > entity;
+  };
+}

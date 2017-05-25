@@ -181,12 +181,19 @@ function props(factory, props) {
   };
 }
 
+function fromContainer(container, entity) {
+  return function (resolver) {
+    return container.resolve < T > entity;
+  };
+}
+
 exports['default'] = Speedball;
 exports.value = value;
 exports.singleton = singleton;
 exports.func = func;
 exports.construct = construct;
 exports.props = props;
+exports.fromContainer = fromContainer;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

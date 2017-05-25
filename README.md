@@ -101,6 +101,10 @@ Creates a factory that resolves the entities `entities`, constructs the class `c
 
 Creates a factory that resolves the entities `entities`, calls the function `func` with them, then returns the result. Similar to `construct`.
 
+#### `fromContainer<T>(container: Speedball, entity: string): Factory<T>`
+
+Creates a factory that resolves the entity `entity` from another speedball container.
+
 ### Factory combinators
 
 Factory combinators modify behaviour of exsting factories. All factory combinators return new factories, rather than mutating existing ones.
