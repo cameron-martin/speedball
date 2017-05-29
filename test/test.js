@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { suite, test } from 'mocha';
 
 import type { Factory } from '../src/speedball';
-import Speedball, { value, singleton, func, construct, props } from '../src/speedball';
+import Speedball, { value, singleton, func, construct, props, fromContainer } from '../src/speedball';
 
 function createResolver(entities: { [key: string]: any }) {
   return {
@@ -120,7 +120,7 @@ suite('Speedball', function() {
 
 suite('value', function() {
   [1, 'value', {}].forEach(val => {
-    test(`it returns a function which when called returns the constant value ${val}`, function() {
+    test(`it returns a function which when called returns the constant value ${val.toString()}`, function() {
       var factory = value(val);
 
       expect(factory(noOpResolver)).to.eq(val);
@@ -231,5 +231,15 @@ suite('props', function() {
 
     expect(entity1.prop).to.be.an.instanceOf(Entity2);
     expect(entity1.prop.prop).to.eq(entity1);
+  });
+});
+
+suite('fromContainer', function() {
+  test('resolves dependency from another container', function() {
+    const childContainer = new Speedball().register('foo', value(1));
+
+    const parentContainer = new Speedball().register('bar', fromContainer(childContainer, 'foo'));
+
+    expect(parentContainer.resolve('bar')).to.eq(1);
   });
 });

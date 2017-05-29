@@ -64,17 +64,17 @@ var speedball = new Speedball()
 ## Design Goals
 
 * To not be tied to a particular module system.
-* To allow currying style DI, e.g.
-  `const f = (dep1, dep2) => (arg1, arg2) => {}`
+* To allow injecting dependencies into functions, e.g.
+  `const f = (dep1, dep2) => (arg1, arg2) => {}`
 * To be extensible. The indicator I used for this is the ability to implement AOP without modifying existing code.
 
 ## API
 
-The types in the api documentation follow the conventions of [flow].
+The types in the API documentation use the syntax of [flow].
 
 ### Speedball class
 
-This is what you will use to configure your dependency hierachy and resolve your dependencies with. Unless you are creating custom factory combinators/constructors, the `Factory<T>` type can be considered [abstract][abstract-data-type].
+This is what you will use to configure your dependency graph and resolve your dependencies with. Unless you are creating custom factory combinators/creators, the `Factory<T>` type can be considered [abstract][abstract-data-type].
 
 #### `register<T>(name: string, factory: Factory<T>): Speedball`
 
@@ -84,9 +84,9 @@ Registers a dependency under the name `name`.
 
 Resolves a dependency that has been registered under the name `name`.
 
-### Factory constructors
+### Factory creators
 
-Factory constructors are functions that construct factories, given something that is not a factory.
+Factory creators are functions that construct factories, given something that is not a factory
 
 
 #### `value<T>(value: T): Factory<T>`
@@ -95,11 +95,15 @@ Create a constant factory that always returns `value`. This is useful for config
 
 #### `construct<T>(constructor: Class<T>, entities: Array<string> = []): Factory<T>`
 
-Creates a factory that resolves the entities `entities` then constructs the class `constructor` with them. Similar to `func`.
+Creates a factory that resolves the entities `entities`, constructs the class `constructor` with them, then returns the instance. Similar to `func`.
 
 #### `func<T>(func: (...args: any) => T, entities: Array<string> = []): Factory<T>`
 
-Creates a factory that resolves the entities `entities` then passes them into a function. Similar to `construct`.
+Creates a factory that resolves the entities `entities`, calls the function `func` with them, then returns the result. Similar to `construct`.
+
+#### `fromContainer<T>(container: Speedball, entity: string): Factory<T>`
+
+Creates a factory that resolves the entity `entity` from another speedball container.
 
 ### Factory combinators
 
@@ -144,6 +148,22 @@ Registers an *after hook*, a function that is executed after the root dependency
 #### `willCauseCycle(name: string): bool`
 
 Determines whether resolving the dependency registered under the name `name` would result in the dependency graph being cyclic. This can be used in combination with `after` to resolve cyclic dependencies.
+
+## Custom factory examples
+
+### Stateful counter factory creator
+
+This could be used for injecting unique ids into classes and functions.
+
+```javascript
+function counter() {
+    let count = 1;
+    
+    return function() {
+        return count++;
+    }
+}
+```
 
 ## TODO
 
