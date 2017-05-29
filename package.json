@@ -61,7 +61,7 @@
     "gobble-cli": "^0.8.0",
     "gobble-rollup": "^0.40.0",
     "gobble-uglifyjs": "^0.2.1",
-    "mocha": "^3.0.0",
+    "mocha": "^3.4.0",
     "shared-git-hooks": "^1.1.4",
     "sinon": "^2.3.1"
   }
