@@ -5,6 +5,8 @@
 
 # Speedball
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/cameron-martin/speedball.svg)](https://greenkeeper.io/)
+
 Speedball is a [combinator-based][combinator] dependency injection library. It consists of:
 
 * *Factories*, which are functions that produce dependencies.
