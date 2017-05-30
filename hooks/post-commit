@@ -6,7 +6,7 @@ then
     rm .commit
     echo "Building output"
     {
-      npm run build-once &&
+      npm run build &&
       git add dist/* &&
       git commit --amend -C HEAD --no-verify
     } || {

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": false,
+        "sourceMap": false,
+        "moduleResolution": "node",
+        "lib": ["es2015"],
+
+        // These are only for tests, but must be put here
+        // because otherwise ts-node/register does not pick up the settings
+        // TODO: Make the tsconfig.json in ./test/ work properly
+        "target": "es5",
+        "module": "commonjs"
+    },
+    "compileOnSave": false
+}

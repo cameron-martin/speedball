@@ -5,7 +5,7 @@ export type Factory<T> = (x: IResolver) => T;
 export interface IResolver {
   resolve<T>(name: string): T;
   after(f: AfterHook): void;
-  willCauseCycle(name: string): bool;
+  willCauseCycle(name: string): boolean;
 }
 
 export type AfterHook = (resolver: IResolver) => void;
@@ -41,12 +41,12 @@ class ResolvingSession {
   _afterHooks: Array<AfterHook>;
   _factories: { [key: string]: Factory<any> };
 
-  constructor(factories) {
+  constructor(factories: { [key: string]: Factory<any> }) {
     this._factories = factories;
     this._afterHooks = [];
   }
 
-  addAfterHook(f) {
+  addAfterHook(f: AfterHook) {
     this._afterHooks.push(f);
   }
 
@@ -62,12 +62,12 @@ class ResolvingSession {
   }
 }
 
-class Resolver {
+class Resolver implements IResolver {
   _factories: { [key: string]: Factory<any> };
   _ancestors: Array<string>;
   _resolvingSession: ResolvingSession;
 
-  constructor(factories, ancestors, resolvingSession) {
+  constructor(factories: { [key: string]: Factory<any> }, ancestors: string[], resolvingSession: ResolvingSession) {
     this._factories = factories;
     this._ancestors = ancestors;
     this._resolvingSession = resolvingSession;
@@ -75,7 +75,7 @@ class Resolver {
     Object.freeze(this);
   }
 
-  resolve(name: string) {
+  resolve(name: string): any {
     if(!(name in this._factories)) {
       throw new Error('Attempted to resolve an unregistered dependency: ' + name);
     }
@@ -93,7 +93,7 @@ class Resolver {
     this._resolvingSession.addAfterHook(f);
   }
 
-  willCauseCycle(entityName: string): bool {
+  willCauseCycle(entityName: string): boolean {
     return this._ancestors.indexOf(entityName) !== -1;
   }
 }
@@ -105,7 +105,7 @@ export function value<T>(value: T): Factory<T> {
 }
 
 export function singleton<T>(factory: Factory<T>): Factory<T> {
-  var result;
+  var result: T;
 
   return function(resolver) {
     if(!result) {
@@ -116,22 +116,26 @@ export function singleton<T>(factory: Factory<T>): Factory<T> {
   };
 }
 
-export function func<T>(func: (...args: any) => T, entities: Array<string> = []): Factory<T> {
+export function func<T>(func: (...args: any[]) => T, entities: Array<string> = []): Factory<T> {
   return function(resolver) {
     var args = entities.map(entityName => resolver.resolve(entityName));
     return func(...args);
   };
 }
 
+export interface Class<T> {
+  new(...args: any[]): T;
+}
+
 export function construct<T>(constructor: Class<T>, entities: Array<string> = []): Factory<T> {
   return function(resolver) {
     var args = entities.map(entity => resolver.resolve(entity));
 
-    return new (constructor: any)(...args);
+    return new (constructor)(...args);
   };
 }
 
-export function props<T>(factory: Factory<T>, props: { [key: string]: string }): Factory<T> {
+export function props<T extends Record<K, any>, K extends string>(factory: Factory<T>, props: Record<K, string>): Factory<T> {
   return function(resolver) {
     var entity = factory(resolver);
 
@@ -140,10 +144,10 @@ export function props<T>(factory: Factory<T>, props: { [key: string]: string }):
 
       if(resolver.willCauseCycle(entityName)) {
         resolver.after(function(resolver) {
-          (entity: any)[propertyName] = resolver.resolve(entityName);
+          entity[propertyName] = resolver.resolve<any>(entityName);
         });
       } else {
-        (entity: any)[propertyName] = resolver.resolve(entityName);
+        entity[propertyName] = resolver.resolve<any>(entityName);
       }
     }
 
@@ -153,6 +157,6 @@ export function props<T>(factory: Factory<T>, props: { [key: string]: string }):
 
 export function fromContainer<T>(container: Speedball, entity: string): Factory<T> {
   return function(resolver) {
-    return container.resolve(entity);
+    return container.resolve<T>(entity);
   };
 }

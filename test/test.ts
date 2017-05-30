@@ -1,18 +1,14 @@
-// @flow
-
 import { expect } from 'chai';
-import sinon from 'sinon';
-import { suite, test } from 'mocha';
+import * as sinon from 'sinon';
 
-import type { Factory } from '../src/speedball';
-import Speedball, { value, singleton, func, construct, props, fromContainer } from '../src/speedball';
+import Speedball, { value, singleton, func, construct, props, fromContainer, Factory, AfterHook } from '../';
 
 function createResolver(entities: { [key: string]: any }) {
   return {
     resolve<T>(name: string): T {
-      return (entities[name]: T);
+      return (entities[name] as T);
     },
-    after(f) { },
+    after(f: AfterHook) { },
     willCauseCycle() { return false; }
   };
 }
@@ -130,7 +126,7 @@ suite('value', function() {
 
 suite('singleton', function() {
   test('it converts a factory into a singleton factory, i.e. one that memoises.', function() {
-    const factory: Factory<number> = sinon.stub();
+    const factory = sinon.stub();
 
     factory.onFirstCall().returns(1);
     factory.onSecondCall().returns(2);
@@ -177,7 +173,7 @@ suite('construct', function() {
     class Entity {
       one: number;
 
-      constructor(one) {
+      constructor(one: number) {
         this.one = one;
       }
     }
@@ -186,7 +182,7 @@ suite('construct', function() {
 
     speedball.register('entity', construct(Entity, ['one']));
 
-    var entity = speedball.resolve('entity');
+    var entity = speedball.resolve<Entity>('entity');
 
     expect(entity.one).to.eq(1);
   });
@@ -196,7 +192,9 @@ suite('props', function() {
   test('it injects dependencies into props', function() {
     var speedball = new Speedball();
 
-    class Entity {}
+    class Entity {
+      public two: number;
+    }
 
     speedball.register('two', value(2));
 
@@ -205,7 +203,7 @@ suite('props', function() {
       { two: 'two' }
     ));
 
-    var entity = speedball.resolve('entity');
+    var entity = speedball.resolve<Entity>('entity');
 
     expect(entity.two).to.eq(2);
   });
@@ -214,8 +212,13 @@ suite('props', function() {
   test('it allows circular dependencies', function() {
     var speedball = new Speedball();
 
-    class Entity1 {}
-    class Entity2 {}
+    class Entity1 {
+      prop: Entity2;
+    }
+
+    class Entity2 {
+      prop: Entity1;
+    }
 
     speedball.register('entity1', singleton(props(
       construct(Entity1),
@@ -227,7 +230,7 @@ suite('props', function() {
       { prop: 'entity1'}
     )));
 
-    var entity1 = speedball.resolve('entity1');
+    var entity1 = speedball.resolve<Entity1>('entity1');
 
     expect(entity1.prop).to.be.an.instanceOf(Entity2);
     expect(entity1.prop.prop).to.eq(entity1);
