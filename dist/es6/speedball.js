@@ -71,37 +71,10 @@ export function singleton(factory) {
         return result;
     };
 }
-export function func(func, entities = []) {
+function func(func, entities = []) {
     return function (resolver) {
         var args = entities.map(entityName => resolver.resolve(entityName));
         return func(...args);
     };
 }
-export function construct(constructor, entities = []) {
-    return function (resolver) {
-        var args = entities.map(entity => resolver.resolve(entity));
-        return new (constructor)(...args);
-    };
-}
-export function props(factory, props) {
-    return function (resolver) {
-        var entity = factory(resolver);
-        for (let propertyName in props) {
-            let entityName = props[propertyName];
-            if (resolver.willCauseCycle(entityName)) {
-                resolver.after(function (resolver) {
-                    entity[propertyName] = resolver.resolve(entityName);
-                });
-            }
-            else {
-                entity[propertyName] = resolver.resolve(entityName);
-            }
-        }
-        return entity;
-    };
-}
-export function fromContainer(container, entity) {
-    return function (resolver) {
-        return container.resolve(entity);
-    };
-}
+export { func };

@@ -3,12 +3,12 @@ import * as sinon from 'sinon';
 
 import Speedball, { value, singleton, func, construct, props, fromContainer, Factory, AfterHook } from '../';
 
-function createResolver(entities: { [key: string]: any }) {
+function createResolver<Map>(entities: Map): IResolver<Map> {
   return {
-    resolve<T>(name: string): T {
-      return (entities[name] as T);
+    resolve(name: keyof Map): any {
+      return entities[name];
     },
-    after(f: AfterHook) { },
+    after(f: AfterHook<Map>) { },
     willCauseCycle() { return false; }
   };
 }
@@ -18,7 +18,7 @@ var noOpResolver = createResolver({});
 suite('Speedball', function() {
   suite('#register', function() {
     test('it returns what the factory returns', function() {
-      var speedball = new Speedball();
+      var speedball = new Speedball<{ factory: {} }>();
 
       var obj = {};
 
@@ -30,7 +30,7 @@ suite('Speedball', function() {
     });
 
     test('it does not memoise', function() {
-      var speedball = new Speedball();
+      var speedball = new Speedball<{ entity: number }>();
 
       var factory = sinon.stub();
 
@@ -54,15 +54,15 @@ suite('Speedball', function() {
       }).to.throw(Error, `An entity is already registered with the name "a"`);
     });
 
-    test.skip('it passes the speedball instance to the factory', function() {
-      var speedball = new Speedball();
-      var factory = sinon.spy();
+    // test.skip('it passes the speedball instance to the factory', function() {
+    //   var speedball = new Speedball();
+    //   var factory = sinon.spy();
 
-      speedball.register('entity', factory);
-      speedball.resolve('entity');
+    //   speedball.register('entity', factory);
+    //   speedball.resolve('entity');
 
-      sinon.assert.calledWithExactly(factory, speedball);
-    });
+    //   sinon.assert.calledWithExactly(factory, speedball);
+    // });
 
     test('it is fluent', function() {
       var speedball = new Speedball();
@@ -75,7 +75,7 @@ suite('Speedball', function() {
 
   suite('#resolve', function() {
     test('it throws an exception when resolving circular dependencies', function() {
-      var speedball = new Speedball();
+      var speedball = new Speedball<{entity1: number, entity2: number}>();
 
       speedball.register('entity1', function(speedball) {
         return speedball.resolve('entity2');
@@ -91,7 +91,7 @@ suite('Speedball', function() {
     });
 
     test('it throws an exception when directly resolving an unknown dependency', function() {
-      var speedball = new Speedball();
+      var speedball = new Speedball<{ abc: number }>();
 
       expect(() => {
         speedball.resolve('abc');
@@ -99,7 +99,7 @@ suite('Speedball', function() {
     });
 
     test('it throws an exception when indirectly resolving an unknown dependency', function() {
-      var speedball = new Speedball();
+      var speedball = new Speedball<{a: boolean, b: boolean}>();
 
       speedball.register('a', function(speedball) {
         return speedball.resolve('b');
@@ -131,10 +131,12 @@ suite('singleton', function() {
     factory.onFirstCall().returns(1);
     factory.onSecondCall().returns(2);
 
-    const singletonFactory = singleton(factory);
+    var speedball = new Speedball<{foo: number}>();
 
-    expect(singletonFactory(noOpResolver)).to.eq(1);
-    expect(singletonFactory(noOpResolver)).to.eq(1);
+    speedball.register('foo', singleton(factory));
+
+    expect(speedball.resolve('foo')).to.eq(1);
+    expect(speedball.resolve('foo')).to.eq(1);
   });
 });
 
@@ -168,7 +170,7 @@ suite('func', function() {
 
 suite('construct', function() {
   test('injects dependencies into constructor and props', function() {
-    var speedball = new Speedball();
+    var speedball = new Speedball<{  }>();
 
     class Entity {
       one: number;
@@ -182,7 +184,7 @@ suite('construct', function() {
 
     speedball.register('entity', construct(Entity, ['one']));
 
-    var entity = speedball.resolve<Entity>('entity');
+    var entity = speedball.resolve('entity');
 
     expect(entity.one).to.eq(1);
   });

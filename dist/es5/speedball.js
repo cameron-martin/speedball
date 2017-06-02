@@ -8,10 +8,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.value = value;
 exports.singleton = singleton;
-exports.func = func;
-exports.construct = construct;
-exports.props = props;
-exports.fromContainer = fromContainer;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -139,39 +135,4 @@ function func(func) {
         return func.apply(undefined, _toConsumableArray(args));
     };
 }
-function construct(constructor) {
-    var entities = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-    return function (resolver) {
-        var args = entities.map(function (entity) {
-            return resolver.resolve(entity);
-        });
-        return new (Function.prototype.bind.apply(constructor, [null].concat(_toConsumableArray(args))))();
-    };
-}
-function props(factory, props) {
-    return function (resolver) {
-        var entity = factory(resolver);
-
-        var _loop = function _loop(propertyName) {
-            var entityName = props[propertyName];
-            if (resolver.willCauseCycle(entityName)) {
-                resolver.after(function (resolver) {
-                    entity[propertyName] = resolver.resolve(entityName);
-                });
-            } else {
-                entity[propertyName] = resolver.resolve(entityName);
-            }
-        };
-
-        for (var propertyName in props) {
-            _loop(propertyName);
-        }
-        return entity;
-    };
-}
-function fromContainer(container, entity) {
-    return function (resolver) {
-        return container.resolve(entity);
-    };
-}
+exports.func = func;
