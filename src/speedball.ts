@@ -166,8 +166,8 @@ export interface Class<T> {
 //   };
 // }
 
-// export function fromContainer<K extends keyof Map, Map>(container: Speedball<Map>, entity: K): Factory<Map[K]> {
-//   return function(resolver) {
-//     return container.resolve(entity);
-//   };
-// }
+export function fromContainer<K extends keyof Map, Map>(container: Speedball<Map>, entity: K): Factory<{}, Map[K]> {
+  return function() {
+    return container.resolve(entity);
+  };
+}
