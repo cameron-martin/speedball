@@ -21,3 +21,4 @@ export { func };
 export interface Class<T> {
     new (...args: any[]): T;
 }
+export declare function fromContainer<K extends keyof Map, Map>(container: Speedball<Map>, entity: K): Factory<{}, Map[K]>;

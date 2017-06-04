@@ -9,7 +9,7 @@
     "pretest": "npm run build",
     "test": "npm run test:typescript && npm run test:js",
     "prebuild": "rm -fr dist",
-    "test:typescript": "ts-node ./run_tests.ts",
+    "test:typescript": "ts-node ./run_tests.ts | faucet",
     "build": "tsc -p src && babel dist/es2015 --out-dir dist/cjs && cp dist/es2015/*.d.ts dist/cjs && rollup --format iife --name Speedball --input dist/es2015/speedball.js --output dist/globals/speedball.js",
     "tsc": "tsc",
     "test:js": "mocha --compilers ts:ts-node/register -u tdd test/**/*.ts"
@@ -38,6 +38,7 @@
     "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.16.0",
     "chai": "^4.0.0",
+    "faucet": "0.0.1",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",
     "mocha": "^3.0.0",

@@ -84,3 +84,8 @@ function func(func, entities) {
     };
 }
 export { func };
+export function fromContainer(container, entity) {
+    return function () {
+        return container.resolve(entity);
+    };
+}

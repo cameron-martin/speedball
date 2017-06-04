@@ -85,10 +85,16 @@ function func(func, entities) {
         return func.apply(void 0, args);
     };
 }
+function fromContainer(container, entity) {
+    return function () {
+        return container.resolve(entity);
+    };
+}
 
 exports['default'] = Speedball;
 exports.value = value;
 exports.singleton = singleton;
 exports.func = func;
+exports.fromContainer = fromContainer;
 
 }((this.Speedball = this.Speedball || {})));

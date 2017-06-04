@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.value = value;
 exports.singleton = singleton;
+exports.fromContainer = fromContainer;
 var Speedball = function () {
     function Speedball() {
         this._factories = {};
@@ -96,3 +97,8 @@ function func(func, entities) {
     };
 }
 exports.func = func;
+function fromContainer(container, entity) {
+    return function () {
+        return container.resolve(entity);
+    };
+}

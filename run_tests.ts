@@ -15,32 +15,41 @@ const config: TestConfig[] = [
     }
 ];
 
+function testPassed(testResult: TestResult): boolean {
+    return testResult.actualResult === testResult.expectedResult;
+}
+
 const MAX_CONCURRENT_TESTS = 10;
 
-Rx.Observable.from(createTestCases(config)).flatMap(runTest, MAX_CONCURRENT_TESTS).toArray().subscribe(printResults);
+const testCases = createTestCases(config);
+
+console.log(printTapHeader(testCases.length));
+
+Rx.Observable.from(testCases).flatMap(runTest, MAX_CONCURRENT_TESTS).map(printTapLine).subscribe(console.log);
 
 function createTestCases(config: TestConfig[]): TestCase[] {
-    return flatMap(config, config => glob.sync(config.files).map(fileName => ({
+    let number = 1;
+
+    return flatMap(config, config => glob.sync(config.files).map(fileName => (number++, {
         fileName,
-        expectedResult: config.expectedResult
+        expectedResult: config.expectedResult,
+        number,
     })));
 }
 
 function runTest(testCase: TestCase): Promise<TestResult> {
-    return checkTsFileAsync(testCase.fileName).then(actualResult => ({
+    return checkTsFile(testCase.fileName).then(actualResult => ({
         ...testCase,
         actualResult
     }))
 }
 
-function printResults(results: TestResult[]): void {
-    results.forEach(element => {
-        console.log(element.fileName, element.actualResult === element.expectedResult);
-    });
+function printTapHeader(count: number) {
+    return `1..${count}`;
+}
 
-    const allPassed = results.every(result => result.actualResult === result.expectedResult);
-
-    process.exit(allPassed ? 0 : 1);
+function printTapLine(testResult: TestResult, index: number) {
+    return `${testPassed(testResult) ? 'ok' : 'not ok'} ${index + 1} ${testResult.fileName}`;
 }
 
 interface TestConfig {
@@ -51,21 +60,14 @@ interface TestConfig {
 interface TestCase {
     fileName: string;
     expectedResult: boolean;
+    number: number;
 }
 
-interface TestResult {
-    fileName: string;
-    expectedResult: boolean;
+interface TestResult extends TestCase {
     actualResult: boolean;
 }
 
-// function checkTsFile(fileName: string): boolean {
-//     var result = child_process.spawnSync('tsc', ['--noEmit', '--lib', 'es2015', fileName], { encoding: 'utf8' });
-
-//     return result.status === 0;
-// }
-
-function checkTsFileAsync(fileName: string): Promise<boolean> {
+function checkTsFile(fileName: string): Promise<boolean> {
     var result = child_process.spawn('tsc', ['--noEmit', '--lib', 'es2015', fileName]);
 
     return new Promise<boolean>((resolve, reject) => {
