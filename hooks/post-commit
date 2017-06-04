@@ -6,6 +6,7 @@ then
     rm .commit
     echo "Building output"
     {
+      git stash -u &&
       npm run build &&
       git add dist/* &&
       git commit --amend -C HEAD --no-verify
@@ -13,4 +14,5 @@ then
       echo "Building failed, uncommitting"
       git reset HEAD~1
     }
+    git stash pop
 fi
