@@ -1,62 +1,67 @@
-export default class Speedball {
-    constructor() {
+var Speedball = (function () {
+    function Speedball() {
         this._factories = {};
     }
-    register(name, factory) {
+    Speedball.prototype.register = function (name, factory) {
         if (name in this._factories) {
-            throw new Error(`An entity is already registered with the name "${name}"`);
+            throw new Error("An entity is already registered with the name \"" + name + "\"");
         }
         this._factories[name] = factory;
         return this;
-    }
-    resolve(name) {
+    };
+    Speedball.prototype.resolve = function (name) {
         var resolvingSession = new ResolvingSession(this._factories);
         var entity = new Resolver(this._factories, [], resolvingSession).resolve(name);
         resolvingSession.runAfterHooks();
         return entity;
-    }
-}
-class ResolvingSession {
-    constructor(factories) {
+    };
+    return Speedball;
+}());
+export default Speedball;
+var ResolvingSession = (function () {
+    function ResolvingSession(factories) {
         this._factories = factories;
         this._afterHooks = [];
     }
-    addAfterHook(f) {
+    ResolvingSession.prototype.addAfterHook = function (f) {
         this._afterHooks.push(f);
-    }
-    runAfterHooks() {
-        this._afterHooks.forEach(after => {
-            var resolvingSession = new ResolvingSession(this._factories);
-            var resolver = new Resolver(this._factories, [], resolvingSession);
+    };
+    ResolvingSession.prototype.runAfterHooks = function () {
+        var _this = this;
+        this._afterHooks.forEach(function (after) {
+            var resolvingSession = new ResolvingSession(_this._factories);
+            var resolver = new Resolver(_this._factories, [], resolvingSession);
             after(resolver);
             resolvingSession.runAfterHooks();
         });
-    }
-}
-class Resolver {
-    constructor(factories, ancestors, resolvingSession) {
+    };
+    return ResolvingSession;
+}());
+var Resolver = (function () {
+    function Resolver(factories, ancestors, resolvingSession) {
         this._factories = factories;
         this._ancestors = ancestors;
         this._resolvingSession = resolvingSession;
         Object.freeze(this);
     }
-    resolve(name) {
+    Resolver.prototype.resolve = function (name) {
         if (!(name in this._factories)) {
             throw new Error('Attempted to resolve an unregistered dependency: ' + name);
         }
         if (this.willCauseCycle(name)) {
             throw new Error('Circular dependency detected');
         }
-        const newResolver = new Resolver(this._factories, this._ancestors.concat([name]), this._resolvingSession);
+        var newResolver = new Resolver(this._factories, this._ancestors.concat([name]), this._resolvingSession);
         return this._factories[name](newResolver);
-    }
-    after(f) {
+    };
+    Resolver.prototype.after = function (f) {
         this._resolvingSession.addAfterHook(f);
-    }
-    willCauseCycle(entityName) {
+    };
+    Resolver.prototype.willCauseCycle = function (entityName) {
         return this._ancestors.indexOf(entityName) !== -1;
-    }
-}
+    };
+    return Resolver;
+}());
 export function value(value) {
     return function (resolver) {
         return value;
@@ -71,10 +76,11 @@ export function singleton(factory) {
         return result;
     };
 }
-function func(func, entities = []) {
+function func(func, entities) {
+    if (entities === void 0) { entities = []; }
     return function (resolver) {
-        var args = entities.map(entityName => resolver.resolve(entityName));
-        return func(...args);
+        var args = entities.map(function (entityName) { return resolver.resolve(entityName); });
+        return func.apply(void 0, args);
     };
 }
 export { func };
