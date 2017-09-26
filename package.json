@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/cameron-martin/speedball#readme",
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.1",
     "babel-plugin-check-es2015-constants": "^6.8.0",
     "babel-plugin-transform-class-properties": "^6.8.0",
     "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
