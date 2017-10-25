@@ -63,6 +63,6 @@
     "gobble-uglifyjs": "^0.2.1",
     "mocha": "^3.0.0",
     "shared-git-hooks": "^1.1.4",
-    "sinon": "^3.0.0"
+    "sinon": "^4.0.2"
   }
 }
